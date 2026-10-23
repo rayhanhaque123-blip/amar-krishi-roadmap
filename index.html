@@ -234,7 +234,7 @@ document.getElementById('restoreLocalBtn').onclick=async()=>{
 };
 window.addEventListener('online',()=>{updateNetworkStatus();if(driveToken)queueDriveBackup();else backupMsg('ইন্টারনেট এসেছে। Drive যুক্ত করলে অনলাইন ব্যাকআপ হবে।')});
 window.addEventListener('offline',()=>{updateNetworkStatus();backupMsg('অফলাইন: স্থানীয় ব্যাকআপে তথ্য রাখা হচ্ছে; অনলাইনে ফিরলে Drive সিঙ্ক হবে (অ্যাপ খোলা থাকতে হবে)।')});
-function trySilentDriveReconnect(){
+(){
  const clientId=(localStorage.getItem('krishiRoadmapGoogleClientId')||'').trim();
  if(!clientId||!navigator.onLine)return;
  const attempt=()=>{

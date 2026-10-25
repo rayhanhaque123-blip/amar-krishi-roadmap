@@ -65,16 +65,12 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 <section id="records" class="tab hidden"><div class="panel"><h2>সব খাতের আলাদা হিসাব</h2><div class="fields" style="display:grid;grid-template-columns:2fr 1fr;gap:10px"><div><label for="filterText">খুঁজুন</label><input id="filterText" placeholder="খাত, নাম, খামার বা ব্যাচ খুঁজুন"></div><div><label for="filterStatus">অবস্থা</label><select id="filterStatus"><option value="">সব</option><option>চলমান</option><option>ফসল সংগ্রহ শেষ</option><option>স্থগিত</option></select></div></div><div id="recordsList"></div></div></section>
 <section id="reports" class="tab hidden"><div class="panel"><h2>সার্বিক কৃষি রিপোর্ট</h2><div class="grid" id="reportStats"></div><div class="actions"><button id="exportCsv">হিসাব CSV ডাউনলোড</button><button id="pdfReportBtn">PDF রিপোর্ট ডাউনলোড / প্রিন্ট</button></div></div><div class="panel"><h2>খাতভিত্তিক সারাংশ</h2><div class="tablewrap" id="typeSummary"></div></div><div class="panel"><h2>রেকর্ডভিত্তিক সারাংশ</h2><div class="tablewrap" id="cropSummary"></div></div><div class="panel"><h2>খামার/স্থানভিত্তিক সারাংশ</h2><div class="tablewrap" id="plotSummary"></div></div></section>
 <section id="backup" class="tab hidden"><div class="panel"><h2>অ্যাপের নাম পরিবর্তন</h2><label for="appNameInput">আপনার অ্যাপের নাম</label><input id="appNameInput" maxlength="80" placeholder="যেমন: আমার কৃষি ও খামার হিসাব"><div class="actions"><button id="saveAppName">নাম সংরক্ষণ</button><button id="resetAppName" class="secondary">ডিফল্ট নাম</button></div><p class="muted">নামটি এই ব্রাউজারে সংরক্ষিত থাকবে।</p></div><div class="panel"><h2>🛡️ অফলাইন ও অনলাইন অটো ব্যাকআপ</h2>
-<p>তথ্য সংরক্ষণের সময় ব্রাউজারের স্থানীয় ব্যাকআপে কপি থাকবে। Google Drive যুক্ত করলে ইন্টারনেট থাকাকালে এবং অ্যাপ খোলা থাকলে পরিবর্তনগুলো স্বয়ংক্রিয়ভাবে Drive-এ পাঠানো হবে।</p>
+<p>তথ্য সংরক্ষণের সময় এই ডিভাইসে স্থানীয় ব্যাকআপ থাকবে। অনলাইন ক্লাউড ব্যাকআপের জন্য নিচের Google Sheets সেটিংস ব্যবহার করুন।</p>
 <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin:12px 0">
 <div class="stat"><small>স্থানীয় ব্যাকআপ</small><b id="localBackupStatus">চেক হচ্ছে…</b><span class="muted">এই ডিভাইসে IndexedDB</span></div>
-<div class="stat"><small>Google Drive</small><b id="driveBackupStatus">সংযুক্ত নয়</b><span class="muted" id="driveBackupTime">সিঙ্কের জন্য Drive যুক্ত করুন</span></div>
-<div class="stat"><small>ইন্টারনেট</small><b id="networkBackupStatus">চেক হচ্ছে…</b><span class="muted">অনলাইন হলে অপেক্ষমাণ ব্যাকআপ পাঠাবে</span></div>
+<div class="stat"><small>ইন্টারনেট</small><b id="networkBackupStatus">চেক হচ্ছে…</b><span class="muted">অনলাইন / অফলাইন</span></div>
 </div>
-<label for="googleClientId">Google OAuth Client ID</label><input id="googleClientId" placeholder="....apps.googleusercontent.com" autocomplete="off">
-<p class="muted">Google Cloud Console থেকে Web OAuth Client ID দিন (এটি public identifier, গোপন Client Secret নয়)। Client Secret কখনো HTML/JavaScript-এ দেবেন না। HTTPS ওয়েবসাইট বা localhost-এ চালান; file:// থেকে Google OAuth কাজ করে না।</p>
-<div class="actions"><button id="connectDriveBtn">Google Drive যুক্ত করুন</button><button id="syncDriveBtn" class="secondary">এখনই সিঙ্ক করুন</button><button id="restoreDriveBtn" class="secondary">Drive ব্যাকআপ ফিরিয়ে আনুন</button><button id="restoreLocalBtn" class="secondary">স্থানীয় ব্যাকআপ ফিরিয়ে আনুন</button></div>
-<p id="driveBackupMessage" class="muted">Drive সংযোগ না করা পর্যন্ত অটো ক্লাউড ব্যাকআপ চালু হবে না।</p>
+<div class="actions"><button id="restoreLocalBtn" class="secondary">স্থানীয় ব্যাকআপ ফিরিয়ে আনুন</button></div>
 <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
 <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
 <h3>☁️ Google Sheets ক্লাউড ব্যাকআপ</h3>
@@ -88,20 +84,20 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 <button type="button" id="sheetsBackupBtn">এখনই ব্যাকআপ</button>
 <button type="button" class="secondary" id="sheetsRestoreBtn">সর্বশেষ ব্যাকআপ রিস্টোর</button>
 </div>
+<div style="margin-top:10px"><label for="autoSheetsBackupToggle" style="display:flex;align-items:center;gap:8px;cursor:pointer"><input id="autoSheetsBackupToggle" type="checkbox" checked style="width:auto;transform:scale(1.15)"> ✓ স্বয়ংক্রিয় ব্যাকআপ ব্যবস্থা</label></div>
 <p id="sheetsBackupStatus" class="muted" aria-live="polite">Google Sheets সেটিংস দিন, তারপর ব্যাকআপ পরীক্ষা করুন।</p>
 <p class="muted">রিস্টোর করলে বর্তমান রেকর্ড ক্লাউড ব্যাকআপের রেকর্ড দিয়ে প্রতিস্থাপিত হবে। আগে JSON ফাইল ডাউনলোড করে রাখুন।</p>
 <h3>ম্যানুয়াল ব্যাকআপ / পুনরুদ্ধার</h3><div class="actions"><button id="backupBtn">ব্যাকআপ ফাইল ডাউনলোড</button><label class="btn" for="restoreFile">ব্যাকআপ ফাইল থেকে ফিরিয়ে আনুন</label><input id="restoreFile" type="file" accept=".json,application/json" class="hidden"></div>
-<p class="muted">গুরুত্বপূর্ণ: স্থানীয় ব্যাকআপ একই ডিভাইস/ব্রাউজারে থাকে; ডিভাইস নষ্ট বা ব্রাউজারের সব ডেটা মুছে গেলে এটিও হারাতে পারে। তাই Drive সংযোগ এবং মাঝে মাঝে JSON ফাইল ডাউনলোড—দুটিই রাখুন।</p></div></section>
+<p class="muted">গুরুত্বপূর্ণ: স্থানীয় ব্যাকআপ একই ডিভাইস/ব্রাউজারে থাকে; ডিভাইস নষ্ট বা ব্রাউজারের সব ডেটা মুছে গেলে এটিও হারাতে পারে। তাই মাঝে মাঝে JSON ব্যাকআপ ফাইল ডাউনলোড করে নিরাপদে রাখুন।</p></div></section>
 </main></div>
 <footer>🌿 কৃষি ও খামার ব্যবস্থাপনা • অফলাইন সংস্করণ</footer>
 <div id="modalRoot"></div>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
 const KEY='krishiRoadmapV1';
 let records=load();
 function validateRecords(data){if(!Array.isArray(data))throw new Error('ব্যাকআপের মূল ফরম্যাট তালিকা নয়');if(data.length>10000)throw new Error('ব্যাকআপে অস্বাভাবিক বেশি রেকর্ড আছে');for(const r of data){if(!r||typeof r!=='object'||Array.isArray(r)||typeof r.crop!=='string'||!r.id)throw new Error('ব্যাকআপে ভুল রেকর্ড পাওয়া গেছে');if(r.transactions!=null&&!Array.isArray(r.transactions))throw new Error('লেনদেনের তথ্য সঠিক নয়');if(r.tasks!=null&&!Array.isArray(r.tasks))throw new Error('কাজের তালিকা সঠিক নয়')}return data}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'[]');return validateRecords(d)}catch(e){return []}}
-function save(){localStorage.setItem(KEY,JSON.stringify(records));render();queueLocalBackup();queueDriveBackup();queueSheetsBackup()}
+function save(){localStorage.setItem(KEY,JSON.stringify(records));render();queueLocalBackup();queueSheetsBackup()}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function money(n){return '৳'+Number(n||0).toLocaleString('en-BD',{maximumFractionDigits:2})}
@@ -193,62 +189,26 @@ function printRecordPdf(id){const r=records.find(x=>x.id===id);if(!r)return;cons
 function editTx(id,i){const r=records.find(x=>x.id===id),t=r?.transactions?.[i];if(!t)return;document.getElementById('txType').value=t.type;updateCategoryOptions();document.getElementById('txCategory').value=t.category||'';document.getElementById('txDesc').value=t.desc||'';document.getElementById('txAmount').value=t.amount;document.getElementById('txDate').value=t.date||'';document.getElementById('editTxIndex').value=String(i);const b=document.querySelector('#modalRoot form[onsubmit^="addTx"] button');if(b)b.textContent='পরিবর্তন সংরক্ষণ';document.getElementById('txDesc').scrollIntoView({behavior:'smooth',block:'center'})}
 
 
-// Local IndexedDB snapshot + optional Google Drive sync. Upload retries on next open when the page is open.
+// Local IndexedDB snapshot backup (Google Drive OAuth removed).
 const LOCAL_DB='krishiRoadmapOfflineBackup', LOCAL_STORE='snapshots';
-let localDb=null, driveToken=null, driveFileId=null, driveSyncTimer=null, driveBusy=false;
-const DRIVE_NAME='amar-krishi-roadmap-autobackup.json';
-function backupMsg(msg){const el=document.getElementById('driveBackupMessage');if(el)el.textContent=msg}
+let localDb=null;
 function updateNetworkStatus(){const n=document.getElementById('networkBackupStatus');if(n)n.textContent=navigator.onLine?'অনলাইন':'অফলাইন'}
 function openLocalDb(){return new Promise((resolve,reject)=>{if(!('indexedDB' in window)){reject(new Error('IndexedDB সমর্থিত নয়'));return}const req=indexedDB.open(LOCAL_DB,1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(LOCAL_STORE))db.createObjectStore(LOCAL_STORE,{keyPath:'id'})};req.onsuccess=()=>{localDb=req.result;resolve(localDb)};req.onerror=()=>reject(req.error||new Error('স্থানীয় ব্যাকআপ খুলতে সমস্যা'))})}
 async function writeLocalSnapshot(){
  const payload={id:'latest',schemaVersion:1,app:'আমার কৃষি রোডম্যাপ',savedAt:new Date().toISOString(),records,appName:getAppName()};
  try{const db=localDb||await openLocalDb();await new Promise((resolve,reject)=>{const tx=db.transaction(LOCAL_STORE,'readwrite');const store=tx.objectStore(LOCAL_STORE);store.put(payload);store.put({...payload,id:'snap_'+Date.now()+'_'+Math.random().toString(36).slice(2,6)});const all=store.getAll();all.onsuccess=()=>{const snaps=all.result.filter(x=>String(x.id).startsWith('snap_')).sort((a,b)=>String(b.savedAt).localeCompare(String(a.savedAt)));snaps.slice(30).forEach(x=>store.delete(x.id))};tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||new Error('স্থানীয় ব্যাকআপ ব্যর্থ'))});const st=document.getElementById('localBackupStatus');if(st)st.textContent='সর্বশেষ কপি সংরক্ষিত';return true}
- catch(e){const st=document.getElementById('localBackupStatus');if(st)st.textContent='সংরক্ষণে সমস্যা';backupMsg('স্থানীয় ব্যাকআপে সমস্যা: '+e.message);return false}
+ catch(e){const st=document.getElementById('localBackupStatus');if(st)st.textContent='সংরক্ষণে সমস্যা';console.warn('স্থানীয় ব্যাকআপে সমস্যা:',e);return false}
 }
 function queueLocalBackup(){writeLocalSnapshot()}
-function queueDriveBackup(){if(!driveToken)return;clearTimeout(driveSyncTimer);driveSyncTimer=setTimeout(()=>syncDriveBackup(false).catch(e=>backupMsg('Drive সিঙ্ক ব্যর্থ: '+e.message)),1800)}
-async function driveFetch(url,options={}){const res=await fetch(url,{...options,headers:{Authorization:'Bearer '+driveToken,...(options.headers||{})}});if(!res.ok){let detail='';try{detail=(await res.json()).error?.message||''}catch(e){}if(res.status===401){driveToken=null;const st=document.getElementById('driveBackupStatus');if(st)st.textContent='পুনরায় অনুমতি দিন'}throw new Error('Google Drive HTTP '+res.status+(detail?': '+detail:''))}return res}
-async function findDriveBackup(){if(driveFileId)return driveFileId;const q=encodeURIComponent("name='"+DRIVE_NAME+"' and trashed=false");const res=await driveFetch('https://www.googleapis.com/drive/v3/files?q='+q+'&pageSize=10&fields=files(id,name,modifiedTime)');const data=await res.json();if(data.files?.length)driveFileId=data.files[0].id;return driveFileId}
-async function syncDriveBackup(manual=true){
- if(!driveToken)throw new Error('আগে Google Drive যুক্ত করুন');if(!navigator.onLine)throw new Error('ইন্টারনেট সংযোগ নেই; স্থানীয় ব্যাকআপ রাখা হয়েছে');if(driveBusy)return;driveBusy=true;
- const status=document.getElementById('driveBackupStatus');
- try{
-  if(status)status.textContent='সিঙ্ক হচ্ছে…';
-  const payload={schemaVersion:1,app:'আমার কৃষি রোডম্যাপ',savedAt:new Date().toISOString(),records,appName:getAppName()};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const existing=await findDriveBackup();let res;
-  if(existing){res=await driveFetch('https://www.googleapis.com/upload/drive/v3/files/'+existing+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body:blob})}
-  else{
-   const boundary='krishi_backup_boundary_'+Date.now();const metadata={name:DRIVE_NAME,mimeType:'application/json',description:'Automatic backup from Amar Krishi Roadmap'};
-   const body=new Blob(['--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n',JSON.stringify(metadata),'\r\n--'+boundary+'\r\nContent-Type: application/json\r\n\r\n',blob,'\r\n--'+boundary+'--']);
-   res=await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,modifiedTime',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+boundary},body});const meta=await res.json();driveFileId=meta.id;
-  }
-  const now=new Date().toLocaleString('bn-BD');if(status)status.textContent='সিঙ্ক সম্পন্ন';const tm=document.getElementById('driveBackupTime');if(tm)tm.textContent='সর্বশেষ: '+now;backupMsg('Google Drive-এ সর্বশেষ তথ্য সফলভাবে ব্যাকআপ হয়েছে।');localStorage.setItem('krishiRoadmapLastDriveBackup',new Date().toISOString());
- }finally{driveBusy=false}
-}
-function connectDrive(){
- const clientId=(document.getElementById('googleClientId').value||'').trim();if(!clientId){alert('Google OAuth Client ID দিন।');return}localStorage.setItem('krishiRoadmapGoogleClientId',clientId);
- if(!window.google?.accounts?.oauth2){alert('Google লগইন লাইব্রেরি লোড হয়নি। ইন্টারনেট আছে কি না দেখুন, তারপর আবার চেষ্টা করুন।');return}
- const tokenClient=google.accounts.oauth2.initTokenClient({client_id:clientId,scope:'https://www.googleapis.com/auth/drive.file',
- callback:async(resp)=>{if(resp.error){backupMsg('Google অনুমতি পাওয়া যায়নি: '+resp.error);return}driveToken=resp.access_token;document.getElementById('driveBackupStatus').textContent='সংযুক্ত';backupMsg('Google Drive সংযুক্ত হয়েছে। এখন ব্যাকআপ সিঙ্ক হচ্ছে…');try{await syncDriveBackup(true)}catch(e){backupMsg('Drive সিঙ্ক ব্যর্থ: '+e.message)}},
- error_callback:(err)=>backupMsg('Google সংযোগ ব্যর্থ: '+(err.message||err.type||'আবার চেষ্টা করুন'))});
- tokenClient.requestAccessToken({prompt:'consent'});
-}
-async function restoreDriveBackup(){
- if(!driveToken){alert('আগে Google Drive যুক্ত করুন');return}if(!confirm('Drive-এর ব্যাকআপ দিয়ে এই ডিভাইসের বর্তমান হিসাব প্রতিস্থাপন করবেন? আগে বর্তমান তথ্যের একটি JSON ব্যাকআপ ডাউনলোড করুন।'))return;
- try{const id=await findDriveBackup();if(!id)throw new Error('Drive-এ ব্যাকআপ ফাইল পাওয়া যায়নি');const res=await driveFetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media');const data=await res.json();const list=validateRecords(Array.isArray(data)?data:data.records);records=list;if(data.appName)localStorage.setItem('krishiRoadmapAppName',data.appName);localStorage.setItem(KEY,JSON.stringify(records));applyAppName();render();await writeLocalSnapshot();backupMsg('Drive ব্যাকআপ থেকে তথ্য ফিরিয়ে আনা হয়েছে।');alert('Drive ব্যাকআপ থেকে তথ্য ফিরিয়ে আনা হয়েছে।')}
- catch(e){backupMsg('পুনরুদ্ধার ব্যর্থ: '+e.message);alert('পুনরুদ্ধার ব্যর্থ: '+e.message)}
-}
-document.getElementById('connectDriveBtn').onclick=connectDrive;
-document.getElementById('syncDriveBtn').onclick=()=>syncDriveBackup(true).then(()=>alert('Google Drive ব্যাকআপ সম্পন্ন।')).catch(e=>{backupMsg('সিঙ্ক ব্যর্থ: '+e.message);alert('সিঙ্ক ব্যর্থ: '+e.message)});
-
-document.getElementById('restoreDriveBtn').onclick=restoreDriveBackup;
 document.getElementById('restoreLocalBtn').onclick=async()=>{
  if(!confirm('এই ডিভাইসের সর্বশেষ স্থানীয় ব্যাকআপ দিয়ে বর্তমান হিসাব প্রতিস্থাপন করবেন? আগে বর্তমান তথ্যের JSON ব্যাকআপ ডাউনলোড করুন।'))return;
- try{const db=localDb||await openLocalDb();const snap=await new Promise((resolve,reject)=>{const tx=db.transaction(LOCAL_STORE,'readonly');const req=tx.objectStore(LOCAL_STORE).get('latest');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});if(!snap)throw new Error('স্থানীয় ব্যাকআপ পাওয়া যায়নি');records=validateRecords(snap.records);localStorage.setItem(KEY,JSON.stringify(records));if(snap.appName)localStorage.setItem('krishiRoadmapAppName',snap.appName);applyAppName();render();backupMsg('স্থানীয় ব্যাকআপ ফিরিয়ে আনা হয়েছে।');alert('স্থানীয় ব্যাকআপ ফিরিয়ে আনা হয়েছে।')}catch(e){alert('স্থানীয় ব্যাকআপ ফিরিয়ে আনা যায়নি: '+e.message)}
+ try{const db=localDb||await openLocalDb();const snap=await new Promise((resolve,reject)=>{const tx=db.transaction(LOCAL_STORE,'readonly');const req=tx.objectStore(LOCAL_STORE).get('latest');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});if(!snap)throw new Error('স্থানীয় ব্যাকআপ পাওয়া যায়নি');records=validateRecords(snap.records);localStorage.setItem(KEY,JSON.stringify(records));if(snap.appName)localStorage.setItem('krishiRoadmapAppName',snap.appName);applyAppName();render();alert('স্থানীয় ব্যাকআপ ফিরিয়ে আনা হয়েছে।')}catch(e){alert('স্থানীয় ব্যাকআপ ফিরিয়ে আনা যায়নি: '+e.message)}
 };
-/* Google Sheets JSON backup — added without replacing local/Drive backup */
+/* Google Sheets JSON backup */
 const SHEETS_URL_KEY='krishiRoadmapSheetsUrl';
 const SHEETS_SECRET_KEY='krishiRoadmapSheetsSecret';
+const SHEETS_AUTO_KEY='krishiRoadmapAutoSheetsBackup';
+const autoSheetsBackupToggle=document.getElementById('autoSheetsBackupToggle');
 const sheetsUrlInput=document.getElementById('sheetsBackupUrl');
 const sheetsKeyInput=document.getElementById('sheetsBackupKey');
 const sheetsStatus=document.getElementById('sheetsBackupStatus');
@@ -256,8 +216,8 @@ function sheetsMessage(message){if(sheetsStatus)sheetsStatus.textContent=message
 let sheetsSyncTimer=null;
 let sheetsSyncInProgress=false;
 function queueSheetsBackup(){
- // স্বয়ংক্রিয় ক্লাউড ব্যাকআপ কেবল URL ও secret সংরক্ষণ করার পর চালু হবে।
- if(!localStorage.getItem(SHEETS_URL_KEY)||!localStorage.getItem(SHEETS_SECRET_KEY))return;
+ // টিক দেওয়া থাকলে এবং URL ও secret সংরক্ষিত থাকলেই স্বয়ংক্রিয় ক্লাউড ব্যাকআপ হবে।
+ if(!autoSheetsBackupToggle?.checked || !localStorage.getItem(SHEETS_URL_KEY)||!localStorage.getItem(SHEETS_SECRET_KEY))return;
  clearTimeout(sheetsSyncTimer);
  sheetsSyncTimer=setTimeout(async()=>{
   if(sheetsSyncInProgress){queueSheetsBackup();return;}
@@ -291,7 +251,13 @@ function getSheetsSettings(){
 function loadSheetsSettings(){
  sheetsUrlInput.value=localStorage.getItem(SHEETS_URL_KEY)||'';
  sheetsKeyInput.value=localStorage.getItem(SHEETS_SECRET_KEY)||'';
+ autoSheetsBackupToggle.checked=localStorage.getItem(SHEETS_AUTO_KEY)!=='false';
 }
+autoSheetsBackupToggle.onchange=()=>{
+ localStorage.setItem(SHEETS_AUTO_KEY,autoSheetsBackupToggle.checked?'true':'false');
+ if(autoSheetsBackupToggle.checked){sheetsMessage('স্বয়ংক্রিয় ব্যাকআপ চালু হয়েছে।');queueSheetsBackup();}
+ else sheetsMessage('স্বয়ংক্রিয় ব্যাকআপ বন্ধ। চাইলে “এখনই ব্যাকআপ” দিয়ে হাতে ব্যাকআপ নিতে পারবেন।');
+};
 document.getElementById('saveSheetsSettingsBtn').onclick=()=>{
  try{const {url,key}=getSheetsSettings();localStorage.setItem(SHEETS_URL_KEY,url);localStorage.setItem(SHEETS_SECRET_KEY,key);sheetsMessage('Google Sheets সেটিংস সংরক্ষিত। বর্তমান হিসাবের প্রথম ক্লাউড ব্যাকআপ শুরু হচ্ছে…');queueSheetsBackup()}
  catch(err){sheetsMessage('সেটিংস সংরক্ষণ হয়নি: '+err.message)}
@@ -343,24 +309,9 @@ document.getElementById('sheetsRestoreBtn').onclick=async()=>{
 };
 loadSheetsSettings();
 
-window.addEventListener('online',()=>{updateNetworkStatus();if(driveToken)queueDriveBackup();else backupMsg('ইন্টারনেট এসেছে। Drive যুক্ত করলে অনলাইন ব্যাকআপ হবে।')});
-window.addEventListener('offline',()=>{updateNetworkStatus();backupMsg('অফলাইন: স্থানীয় ব্যাকআপে তথ্য রাখা হচ্ছে; অনলাইনে ফিরলে Drive সিঙ্ক হবে (অ্যাপ খোলা থাকতে হবে)।')});
-function trySilentDriveReconnect(){
- const clientId=(localStorage.getItem('krishiRoadmapGoogleClientId')||'').trim();
- if(!clientId||!navigator.onLine)return;
- const attempt=()=>{
-  if(!window.google?.accounts?.oauth2){setTimeout(attempt,700);return}
-  try{
-   const tc=google.accounts.oauth2.initTokenClient({client_id:clientId,scope:'https://www.googleapis.com/auth/drive.file',
-    callback:async(resp)=>{if(resp&&resp.access_token){driveToken=resp.access_token;const st=document.getElementById('driveBackupStatus');if(st)st.textContent='সংযুক্ত';try{await syncDriveBackup(false)}catch(e){backupMsg('স্বয়ংক্রিয় Drive সিঙ্ক হয়নি: '+e.message)} }},
-    error_callback:()=>{const st=document.getElementById('driveBackupStatus');if(st)st.textContent='আবার যুক্ত করুন'}
-   });
-   tc.requestAccessToken({prompt:''});
-  }catch(e){backupMsg('Drive-এ স্বয়ংক্রিয় সংযোগ হয়নি। “Google Drive যুক্ত করুন” চাপুন।')}
- };
- attempt();
-}
-(async()=>{const idInput=document.getElementById('googleClientId');if(idInput)idInput.value=localStorage.getItem('krishiRoadmapGoogleClientId')||'';updateNetworkStatus();try{await openLocalDb();if(localStorage.getItem(KEY)===null){const snap=await new Promise((resolve,reject)=>{const tx=localDb.transaction(LOCAL_STORE,'readonly');const req=tx.objectStore(LOCAL_STORE).get('latest');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});if(snap&&Array.isArray(snap.records)){records=snap.records;localStorage.setItem(KEY,JSON.stringify(records));if(snap.appName)localStorage.setItem('krishiRoadmapAppName',snap.appName);applyAppName();render();backupMsg('স্থানীয় ব্যাকআপ থেকে তথ্য পুনরুদ্ধার করা হয়েছে।')}}await writeLocalSnapshot()}catch(e){const st=document.getElementById('localBackupStatus');if(st)st.textContent='স্থানীয় ব্যাকআপ সীমিত'}const last=localStorage.getItem('krishiRoadmapLastDriveBackup');if(last){const tm=document.getElementById('driveBackupTime');if(tm)tm.textContent='সর্বশেষ: '+new Date(last).toLocaleString('bn-BD')}trySilentDriveReconnect()})();
+window.addEventListener('online',updateNetworkStatus);
+window.addEventListener('offline',updateNetworkStatus);
+(async()=>{updateNetworkStatus();try{await openLocalDb();if(localStorage.getItem(KEY)===null){const snap=await new Promise((resolve,reject)=>{const tx=localDb.transaction(LOCAL_STORE,'readonly');const req=tx.objectStore(LOCAL_STORE).get('latest');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});if(snap&&Array.isArray(snap.records)){records=snap.records;localStorage.setItem(KEY,JSON.stringify(records));if(snap.appName)localStorage.setItem('krishiRoadmapAppName',snap.appName);applyAppName();render()}}await writeLocalSnapshot()}catch(e){const st=document.getElementById('localBackupStatus');if(st)st.textContent='স্থানীয় ব্যাকআপ সীমিত'}})();
 
 applyAppName();resetForm();render();
 if('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Offline cache unavailable:',err)));}

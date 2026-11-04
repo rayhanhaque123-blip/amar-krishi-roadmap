@@ -82,7 +82,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 </section>
 <section id="records" class="tab hidden"><div class="panel"><h2>সব খাতের আলাদা হিসাব</h2><div class="fields" style="display:grid;grid-template-columns:2fr 1fr;gap:10px"><div><label for="filterText">খুঁজুন</label><input id="filterText" placeholder="খাত, নাম, খামার বা ব্যাচ খুঁজুন"></div><div><label for="filterStatus">অবস্থা</label><select id="filterStatus"><option value="">সব</option><option>চলমান</option><option>ফসল সংগ্রহ শেষ</option><option>স্থগিত</option></select></div></div><div id="recordsList"></div></div></section>
 <section id="calendar" class="tab hidden"><div class="panel"><h2>কৃষি ক্যালেন্ডার ও রিমাইন্ডার</h2><p class="muted">সব রেকর্ডের নির্ধারিত কাজ, টিকা, পরিচর্যা ও সংগ্রহের তারিখ।</p><div id="calendarTasks"></div><button class="secondary" onclick="requestNotifications()">ব্রাউজার নোটিফিকেশন অনুমতি</button></div></section>
-<section id="reports" class="tab hidden"><div class="panel"><h2>তারিখভিত্তিক রিপোর্ট</h2><div class="fields"><div><label>শুরুর তারিখ</label><input type="date" id="reportFrom"></div><div><label>শেষ তারিখ</label><input type="date" id="reportTo"></div></div><div class="actions"><button onclick="renderDateReport()">রিপোর্ট দেখুন</button></div><div id="dateReport"></div></div><div class="panel"><h2>সার্বিক কৃষি রিপোর্ট</h2><div class="grid" id="reportStats"></div><div class="actions"><button id="exportCsv">হিসাব CSV ডাউনলোড</button><button id="pdfReportBtn">PDF রিপোর্ট ডাউনলোড / প্রিন্ট</button></div></div><div class="panel"><h2>খাতভিত্তিক সারাংশ</h2><div class="tablewrap" id="typeSummary"></div></div><div class="panel"><h2>রেকর্ডভিত্তিক সারাংশ</h2><div class="tablewrap" id="cropSummary"></div></div><div class="panel"><h2>খামার/স্থানভিত্তিক সারাংশ</h2><div class="tablewrap" id="plotSummary"></div></div></section>
+<section id="reports" class="tab hidden"><div class="panel"><h2>তারিখভিত্তিক রিপোর্ট</h2><div class="fields"><div><label>শুরুর তারিখ</label><input type="date" id="reportFrom"></div><div><label>শেষ তারিখ</label><input type="date" id="reportTo"></div></div><div class="actions"><button onclick="renderDateReport()">রিপোর্ট দেখুন</button></div><div id="dateReport"></div></div><div class="panel"><h2>সার্বিক কৃষি রিপোর্ট</h2><div class="grid" id="reportStats"></div><div class="actions"><button id="exportCsv">হিসাব CSV ডাউনলোড</button><button id="pdfReportBtn">PDF রিপোর্ট ডাউনলোড / প্রিন্ট</button></div></div><div class="panel"><h2>দোকানদারভিত্তিক বাকি হিসাব</h2><p class="muted">সব খামার, ব্যাচ, পশু, পুকুর ও ফসলের ব্যয়ের লেনদেন একত্রে দেখাবে। একই দোকানদারের নাম একইভাবে লিখলে হিসাব একসাথে যোগ হবে।</p><div class="grid" id="supplierDueStats"></div><div class="tablewrap" id="supplierDueSummary"></div></div><div class="panel"><h2>খাতভিত্তিক সারাংশ</h2><div class="tablewrap" id="typeSummary"></div></div><div class="panel"><h2>রেকর্ডভিত্তিক সারাংশ</h2><div class="tablewrap" id="cropSummary"></div></div><div class="panel"><h2>খামার/স্থানভিত্তিক সারাংশ</h2><div class="tablewrap" id="plotSummary"></div></div></section>
 <section id="backup" class="tab hidden"><div class="panel"><h2>অ্যাপের নাম পরিবর্তন</h2><label for="appNameInput">আপনার অ্যাপের নাম</label><input id="appNameInput" maxlength="80" placeholder="যেমন: আমার কৃষি ও খামার হিসাব"><div class="actions"><button id="saveAppName">নাম সংরক্ষণ</button><button id="resetAppName" class="secondary">ডিফল্ট নাম</button></div><p class="muted">নামটি এই ব্রাউজারে সংরক্ষিত থাকবে।</p></div><div class="panel"><h2>🛡️ অফলাইন ও অনলাইন অটো ব্যাকআপ</h2>
 <p>তথ্য সংরক্ষণের সময় এই ডিভাইসে স্থানীয় ব্যাকআপ থাকবে। অনলাইন ক্লাউড ব্যাকআপের জন্য নিচের Google Sheets সেটিংস ব্যবহার করুন।</p>
 <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin:12px 0">
@@ -136,12 +136,64 @@ function card(r){let t=totals(r);return `<article class="record"><div class="rec
 function render(){let all=records.reduce((a,r)=>{let t=totals(r);a.i+=t.income;a.e+=t.expense;return a},{i:0,e:0});let statHtml=[['মোট রেকর্ড',records.length+'টি'],['চলমান রেকর্ড',records.filter(r=>r.status==='চলমান').length+'টি'],['মোট আয়',money(all.i)],['মোট ব্যয়',money(all.e)],['নিট লাভ/ক্ষতি',money(all.i-all.e)]].map(x=>`<div class="stat"><small>${x[0]}</small><strong>${x[1]}</strong></div>`).join('');document.getElementById('stats').innerHTML=statHtml;document.getElementById('reportStats').innerHTML=statHtml;
 document.getElementById('dashboardRecords').innerHTML=records.length?records.filter(r=>r.status==='চলমান').slice(0,5).map(card).join(''):'<div class="empty">এখনো কোনো চাষ যোগ করা হয়নি। “নতুন চাষ যোগ” থেকে শুরু করুন।</div>';
 let q=(document.getElementById('filterText')?.value||'').toLowerCase(),st=document.getElementById('filterStatus')?.value||'';let list=records.filter(r=>(!st||r.status===st)&&[r.entityType,r.crop,r.plot,r.season].some(v=>String(v||'').toLowerCase().includes(q)));document.getElementById('recordsList').innerHTML=list.length?list.map(card).join(''):'<div class="empty">কোনো রেকর্ড পাওয়া যায়নি।</div>';
-document.getElementById('typeSummary').innerHTML=typeSummaryTable();document.getElementById('cropSummary').innerHTML=summaryTable('crop');document.getElementById('plotSummary').innerHTML=summaryTable('plot');renderCalendar()}
+document.getElementById('supplierDueSummary').innerHTML=supplierDueTable();document.getElementById('typeSummary').innerHTML=typeSummaryTable();document.getElementById('cropSummary').innerHTML=summaryTable('crop');document.getElementById('plotSummary').innerHTML=summaryTable('plot');renderCalendar()}
 function daysUntil(date){if(!date)return null;const today=new Date();today.setHours(0,0,0,0);const target=new Date(date+'T00:00:00');if(Number.isNaN(target.getTime()))return null;return Math.round((target-today)/86400000)}
 function countdownLabel(date,done){if(done)return 'সম্পন্ন';const days=daysUntil(date);if(days===null)return 'তারিখ নির্ধারণ নেই';if(days===0)return 'আজকের কাজ';if(days===1)return 'আর ১ দিন বাকি';if(days>1)return `আর ${days.toLocaleString('bn-BD')} দিন বাকি`;return `${Math.abs(days).toLocaleString('bn-BD')} দিন বিলম্বিত`}
 function renderCalendar(){const items=[];records.forEach(r=>(r.tasks||[]).forEach(t=>items.push({...t,record:r.crop,recordId:r.id})));items.sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999'));const el=document.getElementById('calendarTasks');if(el)el.innerHTML=items.length?items.map(t=>{const label=countdownLabel(t.date,t.done),days=daysUntil(t.date),cls=t.done?'due-done':(days!==null&&days<0?'due-late':'');return `<div class="task ${t.done?'done':''}"><span><b>${esc(t.title)}</b> — ${esc(t.record)} <small>${fmtDate(t.date)} · <span class="${cls}">${esc(label)}</span></small></span><button class="small secondary" onclick="showDetails('${t.recordId}')">খুলুন</button></div>`}).join(''):'<p class="empty">কোনো কাজ নির্ধারণ করা হয়নি। রেকর্ডের বিস্তারিত থেকে কাজ যোগ করুন।'} 
 function requestNotifications(){if(!('Notification'in window)){alert('এই ব্রাউজারে নোটিফিকেশন নেই।');return}Notification.requestPermission().then(x=>alert(x==='granted'?'নোটিফিকেশন অনুমতি চালু হয়েছে।':'অনুমতি দেওয়া হয়নি; অ্যাপের ক্যালেন্ডার ব্যবহার করতে পারবেন।'))}
 function renderDateReport(){const from=document.getElementById('reportFrom').value,to=document.getElementById('reportTo').value;let tx=[];records.forEach(r=>(r.transactions||[]).forEach(t=>{if((!from||t.date>=from)&&(!to||t.date<=to))tx.push({...t,record:r.crop})}));const inc=tx.filter(t=>t.type==='income').reduce((a,t)=>a+Number(t.amount||0),0),exp=tx.filter(t=>t.type==='expense').reduce((a,t)=>a+Number(t.amount||0),0),due=tx.filter(t=>t.type==='income').reduce((a,t)=>a+Math.max(0,Number(t.amount||0)-Number(t.paid??t.amount)),0);document.getElementById('dateReport').innerHTML=`<p>লেনদেন: ${tx.length}টি • আয়: ${money(inc)} • ব্যয়: ${money(exp)} • লাভ/ক্ষতি: ${money(inc-exp)} • পাওনা: ${money(due)}</p>`}
+
+function supplierDueTable(){
+  const map = new Map();
+  records.forEach(r => (r.transactions||[]).forEach(t => {
+    if(t.type !== 'expense') return;
+    const name = String(t.supplier || t.buyer || '').trim();
+    if(!name) return;
+    const key = name.toLocaleLowerCase('bn-BD');
+    if(!map.has(key)) map.set(key,{name,total:0,paid:0,due:0,count:0,records:new Set(),phone:String(t.phone||'').trim()});
+    const v=map.get(key), amount=Math.max(0,Number(t.amount||0)), paid=Math.min(amount,Math.max(0,Number(t.paid??amount)));
+    v.total+=amount; v.paid+=paid; v.due+=Math.max(0,amount-paid); v.count++; v.records.add(r.crop||'নামহীন রেকর্ড');
+    if(!v.phone && t.phone) v.phone=String(t.phone).trim();
+  }));
+  const rows=[...map.values()].sort((a,b)=>b.due-a.due);
+  const total=rows.reduce((a,v)=>({bill:a.bill+v.total,paid:a.paid+v.paid,due:a.due+v.due}),{bill:0,paid:0,due:0});
+  const stats=document.getElementById('supplierDueStats');
+  if(stats) stats.innerHTML=[['দোকানদার',rows.length+' জন'],['মোট বিল',money(total.bill)],['পরিশোধ',money(total.paid)],['সর্বমোট বাকি',money(total.due)]].map(x=>`<div class="stat"><small>${x[0]}</small><strong>${x[1]}</strong></div>`).join('');
+  if(!rows.length) return '<div class="empty">দোকানদারের নামসহ কোনো ব্যয়ের লেনদেন নেই। নতুন ব্যয় যোগ করার সময় দোকানদারের নাম লিখুন।</div>';
+  return `<table><thead><tr><th>দোকানদার/সরবরাহকারী</th><th>মোবাইল</th><th>মোট বিল</th><th>পরিশোধ</th><th>বাকি</th><th>লেনদেন</th><th>যে হিসাবগুলোতে</th><th>টাকা পরিশোধ</th></tr></thead><tbody>${rows.map(v=>`<tr><td>${esc(v.name)}</td><td>${esc(v.phone||'—')}</td><td>${money(v.total)}</td><td>${money(v.paid)}</td><td><b>${money(v.due)}</b></td><td>${v.count}টি</td><td>${esc([...v.records].join(', '))}</td><td><button type="button" class="secondary" onclick="paySupplierDue('${esc(v.name).replace(/'/g, '&#39;')}')">পরিশোধ করুন</button></td></tr>`).join('')}</tbody><tfoot><tr><th>সর্বমোট</th><th>—</th><th>${money(total.bill)}</th><th>${money(total.paid)}</th><th>${money(total.due)}</th><th>—</th><th>—</th><th>—</th></tr></tfoot></table>`;
+}
+
+
+function paySupplierDue(supplierName){
+  const matches=[];
+  records.forEach((r,ri)=>(r.transactions||[]).forEach((t,ti)=>{
+    const name=String(t.supplier||t.buyer||'').trim();
+    if(t.type==='expense' && name.toLocaleLowerCase('bn-BD')===supplierName.toLocaleLowerCase('bn-BD')){
+      const amount=Math.max(0,Number(t.amount||0)),paid=Math.min(amount,Math.max(0,Number(t.paid??amount))),due=Math.max(0,amount-paid);
+      if(due>0) matches.push({r,ri,t,ti,due,date:t.date||''});
+    }
+  }));
+  const total=matches.reduce((s,x)=>s+x.due,0);
+  if(total<=0){alert('এই দোকানদারের কোনো বাকি নেই।');return}
+  const raw=prompt(`${supplierName}\\nমোট বাকি: ${money(total)}\\nএখন কত টাকা পরিশোধ করেছেন?`);
+  if(raw===null)return;
+  const amount=Number(String(raw).replace(/,/g,'').trim());
+  if(!Number.isFinite(amount)||amount<=0){alert('সঠিক টাকার পরিমাণ লিখুন।');return}
+  if(amount>total){alert('পরিশোধের টাকা মোট বাকি টাকার চেয়ে বেশি হতে পারবে না।');return}
+  let left=amount;
+  // পুরোনো বকেয়া আগে সমন্বয় হবে
+  matches.sort((a,b)=>a.date.localeCompare(b.date));
+  for(const x of matches){
+    if(left<=0)break;
+    const paidNow=Math.min(left,x.due);
+    x.t.paid=Math.min(Number(x.t.amount||0),Math.max(0,Number(x.t.paid??0))+paidNow);
+    left-=paidNow;
+  }
+  save();
+  if(typeof showReports==='function') showReports();
+  alert(`${supplierName}-কে ${money(amount)} পরিশোধ হিসেবে যোগ হয়েছে।\\nঅবশিষ্ট বাকি: ${money(total-amount)}`);
+}
+
 function typeSummaryTable(){let map={};records.forEach(r=>{let k=r.entityType||'ফসল';map[k]??={count:0,income:0,expense:0};let t=totals(r);map[k].count++;map[k].income+=t.income;map[k].expense+=t.expense});let rows=Object.entries(map);if(!rows.length)return '<div class="empty">রিপোর্ট দেখানোর মতো তথ্য নেই।</div>';return `<table><thead><tr><th>খাত</th><th>রেকর্ড</th><th>মোট আয়</th><th>মোট ব্যয়</th><th>লাভ/ক্ষতি</th></tr></thead><tbody>${rows.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v.count}</td><td>${money(v.income)}</td><td>${money(v.expense)}</td><td>${money(v.income-v.expense)}</td></tr>`).join('')}</tbody></table>`}
 function summaryTable(field){let map={};records.forEach(r=>{let k=r[field]||'অনির্দিষ্ট';map[k]??={count:0,area:0,income:0,expense:0};let t=totals(r);map[k].count++;map[k].area+=Number(r.area||0);map[k].income+=t.income;map[k].expense+=t.expense});let rows=Object.entries(map);if(!rows.length)return '<div class="empty">রিপোর্ট দেখানোর মতো তথ্য নেই।</div>';return `<table><thead><tr><th>${field==='crop'?'ফসল':'জমি'}</th><th>চাষের সংখ্যা</th><th>মোট জমি (একক মিশ্র হতে পারে)</th><th>আয়</th><th>ব্যয়</th><th>লাভ/ক্ষতি</th></tr></thead><tbody>${rows.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v.count}</td><td>${v.area}</td><td>${money(v.income)}</td><td>${money(v.expense)}</td><td>${money(v.income-v.expense)}</td></tr>`).join('')}</tbody></table>`}
 document.getElementById('filterText').oninput=render;document.getElementById('filterStatus').onchange=render;
